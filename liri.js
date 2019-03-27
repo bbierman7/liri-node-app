@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 var figlet = require('figlet');
 const chalkAnimation = require('chalk-animation');
 const axios = require("axios");
@@ -37,12 +39,12 @@ function App(command, params) {
         case "spotify-this-song":
             getMySong(params);
             break;
-        // case movie - this(params):
-        //     // code block
-        //     break;
-        // case "do-what-it-says":
-        //     doWhatISay();
-        //     break;
+        case movie-this(params):
+            // code block
+            break;
+        case "do-what-it-says":
+            doWhatISay();
+            break;
         default:
             console.log("I dont know that command")
     }
@@ -58,7 +60,7 @@ function getMyBand(params) {
         .then(function (response) {
             console.log("upcoming concerts for" + params + ": ");
             // console.log("upcoming concerts for" + artists + ": ");
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < response.data.length; i++) {
                 var show = response.data[i];
                 console.log(show.venue.city + "," +
                  (show.venue.region || show.venue.country +
@@ -70,3 +72,21 @@ function getMyBand(params) {
             console.log(error);
         });
 };
+
+var Spotify = require('node-spotify-api');
+ 
+var spotify = new Spotify({
+  id: "9c16f68fc27c4260a12d6d608d7769d8",
+  secret: "1b1dacd030c54078bb865f1c419d81db"
+});
+ 
+spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
+ 
+console.log(data); 
+});
+//Spotify
+// Client ID 9c16f68fc27c4260a12d6d608d7769d8
+// Client Secret 1b1dacd030c54078bb865f1c419d81db
