@@ -11,13 +11,18 @@
     "url": "git+https://github.com/bbierman7/liri-node-app.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Brendan",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/bbierman7/liri-node-app/issues"
   },
   "homepage": "https://github.com/bbierman7/liri-node-app#readme",
   "dependencies": {
+    "axios": "^0.18.0",
+    "chalk-animation": "^1.6.0",
+    "dotenv": "^7.0.0",
+    "figlet": "^1.2.1",
+    "moment": "^2.24.0",
     "node-spotify-api": "^1.0.7"
   }
 }
