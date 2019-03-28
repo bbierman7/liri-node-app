@@ -53,21 +53,17 @@ function App(command, params) {
 
 //Band
 function getMyBand(params) {
-// function getMyBand(artists) {
     var queryURL = "https://rest.bandsintown.com/artists/" + params + "/events?app_id=codingbootcamp";
-    // var queryURL = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp";
-    // Make a request for a user with a given ID
-
     axios.get(queryURL)
         .then(function (response) {
             console.log("upcoming concerts for" + params + ": ");
-            // console.log("upcoming concerts for" + artists + ": ");
             for (let i = 0; i < response.data.length; i++) {
                 var show = response.data[i];
                 console.log(show.venue.city + "," +
                  (show.venue.region || show.venue.country +
                      " at " + show.venue.name + " " +
-                     moment(show.datatime).format("MM/DD/YYYY") ))
+                    //  moment(show.datatime).format("MM/DD/YYYY") ))
+                     moment(show.data.time).format("MM/DD/YYYY") ))
             }
         })
         .catch(function (error) {
@@ -78,15 +74,16 @@ function getMyBand(params) {
 //Spotify
 function getMySong(params){
 var keys = require("./keys.js");
+var Spotify = require('node-spotify-api');
+
 var spotify = new Spotify(keys.spotify);
 
-var Spotify = require('node-spotify-api');
  
-spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+spotify.search({ type: 'track', query:params }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
   }
- 
+ debugger;
 console.log(data); 
 });
 };
