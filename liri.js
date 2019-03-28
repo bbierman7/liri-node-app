@@ -4,6 +4,7 @@ require("dotenv").config();
 var figlet = require('figlet');
 const chalkAnimation = require('chalk-animation');
 const axios = require("axios");
+const moment = require("moment")
 
 figlet('LIRI', function (err, data) {
     if (err) {
@@ -62,8 +63,8 @@ function getMyBand(params) {
                 console.log(show.venue.city + "," +
                  (show.venue.region || show.venue.country +
                      " at " + show.venue.name + " " +
-                    //  moment(show.datatime).format("MM/DD/YYYY") ))
-                     moment(show.data.time).format("MM/DD/YYYY") ))
+                     moment(show.datatime).format("MM/DD/YYYY") ))
+                    //  moment(show.data.time).format("MM/DD/YYYY") ))
             }
         })
         .catch(function (error) {
@@ -103,10 +104,10 @@ function getMyMovie(params){
             movieName += nodeArgs[i];
         }
     }
-    var queryUrl = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
-    console.log(queryURL);
+    var queryUrlO = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
+    console.log(queryUrlO);
 
-    axios.get(queryURL).then(
+    axios.get(queryUrlO).then(
         function(response){
             console.log("Release Year: " + response.data.Year);
         }
