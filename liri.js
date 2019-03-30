@@ -1,11 +1,16 @@
 require("dotenv").config();
-// var keys = require("./keys.js");
-// var spotify = new Spotify(keys.spotify);
 var figlet = require('figlet');
 const chalkAnimation = require('chalk-animation');
 const axios = require("axios");
 const moment = require("moment")
+var Spotify = require('node-spotify-api');
+var keys = require("./keys.js");
+var spotify = new Spotify(keys.spotify);
+var fs = require("fs");
+var params= process.argv.slice(3).join("+");
 
+
+//Decoration for the word LIRI
 figlet('LIRI', function (err, data) {
     if (err) {
         console.log('Something went wrong...');
@@ -13,15 +18,14 @@ figlet('LIRI', function (err, data) {
         return;
     }
     const rainbow = chalkAnimation.rainbow(data); // Animation starts
-    // console.log(data)
 
     setTimeout(() => {
         rainbow.stop(); // Animation stops
-    }, 1000);
+    });
 
     setTimeout(() => {
         rainbow.start(); // Animation resumes
-    }, 2000);
+    }, 1000);
 
 });
 
@@ -31,9 +35,8 @@ function runApp() {
     App(process.argv[2], process.argv[3])
 };
 
-
+//
 function App(command, params) {
-// function App(command, artists) {
     switch (command) {
         case "concert-this":
             getMyBand(params);
@@ -44,9 +47,9 @@ function App(command, params) {
         case "movie-this":
             getMyMovie(params);
             break;
-        // case "do-what-it-says":
-        //     doWhatISay();
-        //     break;
+        case "do-what-it-says":
+            doWhatISay();
+            break;
         default:
             console.log("I dont know that command")
     }
@@ -57,14 +60,13 @@ function getMyBand(params) {
     var queryURL = "https://rest.bandsintown.com/artists/" + params + "/events?app_id=codingbootcamp";
     axios.get(queryURL)
         .then(function (response) {
-            console.log("upcoming concerts for" + params + ": ");
+            console.log("upcoming concerts for " + params + ": ");
             for (let i = 0; i < response.data.length; i++) {
                 var show = response.data[i];
                 console.log(show.venue.city + "," +
-                 (show.venue.region || show.venue.country +
-                     " at " + show.venue.name + " " +
-                     moment(show.datatime).format("MM/DD/YYYY") ))
-                    //  moment(show.data.time).format("MM/DD/YYYY") ))
+                    (show.venue.region || show.venue.country) +
+                    " at " + show.venue.name + " " +
+                    moment(show.datetime).format("MM/DD/YYYY"))
             }
         })
         .catch(function (error) {
@@ -73,50 +75,59 @@ function getMyBand(params) {
 };
 
 //Spotify
-function getMySong(params){
-var keys = require("./keys.js");
-var Spotify = require('node-spotify-api');
-
-var spotify = new Spotify(keys.spotify);
-
- 
-spotify.search({ type: 'track', query:params }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
-  }
- debugger;
-console.log(data); 
-});
-};
-
-
-//OMDB
-function getMyMovie(params){
-    var axios = require("axios");
-    var nodeArgs = process.argv;
-    var movieName = "";
-
-    for(var i = 2; i < nodeArgs.length; i++){
-        if (i > 2 && i < nodeArgs.length){
-            movieName = movieName + "+" + nodeArgs[i];
+function getMySong(params) {
+    spotify.search({ type: 'track', query: params }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
         }
-        else{
-            movieName += nodeArgs[i];
-        }
-    }
-    var queryUrlO = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
-    console.log(queryUrlO);
+        // console.log(JSON.stringify(data, null, 2)); 
+        var songs = data.tracks.items;
+        for (let i = 0; i < songs.length; i++) {
 
-    axios.get(queryUrlO).then(
-        function(response){
-            console.log("Release Year: " + response.data.Year);
+            console.log("number: ", i + 1, "/", songs.length);
+            console.log("artist(s): ", songs[i].artists[0].name);
+            console.log("song name: ", songs[i].name);  
+            console.log("preview song: ", songs[i].preview_url);
+            console.log("album: ", songs[i].album.name);
+            console.log("===============================================");
         }
-    )
-    .catch(function (error) {
-        console.log(error);
     });
 };
 
+function doWhatISay() {
+	var commands;
+    var parameter;
+
+	
+	fs.readFile("random.txt", "utf8", function (error, data) {	
+		if (error) {
+			return console.log(error);
+        }
+        console.log(data);
+        // const dataArr = data.split(',');
+        var dataArr = data.split(',');
+        
+        commands=dataArr[0];
+        parameter=dataArr[1];
+        // console.log(dataArr);
+        // console.log(parameter);
+        // console.log("here");
+        App(commands, parameter);
+        // App(commands, parameter);
+
+
+		// for (var i = 0; i < dataArr.length; i++) {
+		// 	commands = dataArr[i];
+		// 	parameter = dataArr[i];
+		// 	console.log(commands, parameter);
+		// 	App(commands, parameter)
+		// };
+	})
+};
+
+
+
+//OMDB
 // * Title of the movie.
 // * Year the movie came out.
 // * IMDB Rating of the movie.
@@ -125,3 +136,42 @@ function getMyMovie(params){
 // * Language of the movie.
 // * Plot of the movie.
 // * Actors in the movie.
+function getMyMovie(params) {
+    var axios = require("axios");
+    // var nodeArgs = process.argv;
+    // var movieName = "";
+    var params= process.argv.slice(3).join("+");
+  
+
+    if(params=="") {
+        params="Mr.Nobody";
+    }
+
+    var queryUrl = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
+    console.log(queryUrl);
+
+    // queryUrl = "http://www.omdbapi.com/?t=Mr.+Nobody&y=&plot=short&apikey=trilogy"
+    axios.get(queryUrl).then(
+        function (response) {
+            for(var i=0;i<response.data.Ratings.length;i++) {
+                if(response.data.Ratings[i].Source=="Rotten Tomatoes") {
+                    var rotten=response.data.Ratings[i].Value;
+                }
+            }
+            console.log(
+                "\nTitle: " + response.data.Title +
+                "\nRelease Year: " + response.data.Released +
+                "\nRotten Tomatoes Rating: " + rotten +
+                "\nIMDB Rating: " + response.data.imdbRating +
+                "\nCountry of production: " + response.data.Country +
+                "\nLanguage: " + response.data.Language +
+                "\nPlot: " + response.data.Plot +
+                "\nActors: " + response.data.Actors
+            );
+        }
+    )
+        .catch(function (error) {
+            console.log(error);
+        });
+};
+
