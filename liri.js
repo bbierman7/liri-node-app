@@ -37,11 +37,14 @@ figlet('LIRI', function (err, data) {
 setTimeout(runApp, 1000);
 
 function runApp() {
-    App(process.argv[2], process.argv[3])
+    var params= process.argv.slice(3).join(" ");
+    App(process.argv[2], params)
 };
 
 //
 function App(command, params) {
+    console.log("here In App",command,params);
+
     switch (command) {
         case "concert-this":
             getMyBand(params);
@@ -62,9 +65,9 @@ function App(command, params) {
 
 //Band
 function getMyBand(params) {
-    var params= process.argv.slice(3).join(" ");
 
     var queryURL = "https://rest.bandsintown.com/artists/" + params + "/events?app_id=codingbootcamp";
+console.log( "Here in getMyBand: " + params);
     axios.get(queryURL)
         .then(function (response) {
             console.log("upcoming concerts for " + params + ": ");
@@ -83,10 +86,15 @@ function getMyBand(params) {
 
 //Spotify
 function getMySong(params) {
-    spotify.search({ type: 'track', query: params }, function (err, data) {
+
+        if(params=="") {
+            params="The Sign Ace of Base";
+        }
+        spotify.search({ type: 'track', query: params }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
+
         // console.log(JSON.stringify(data, null, 2)); 
         var songs = data.tracks.items;
         for (let i = 0; i < songs.length; i++) {
@@ -116,19 +124,8 @@ function doWhatISay() {
         
         commands=dataArr[0];
         parameter=dataArr[1];
-        // console.log(dataArr);
-        // console.log(parameter);
-        // console.log("here");
+        console.log(commands,parameter)
         App(commands, parameter);
-        // App(commands, parameter);
-        
-
-		// for (var i = 0; i < dataArr.length; i++) {
-		// 	commands = dataArr[i];
-		// 	parameter = dataArr[i];
-		// 	console.log(commands, parameter);
-		// 	App(commands, parameter)
-		// };
 	})
 };
 
@@ -139,11 +136,11 @@ function getMyMovie(params) {
     var axios = require("axios");
     // var nodeArgs = process.argv;
     // var movieName = "";
-    var params= process.argv.slice(3).join("+");
+  //  var params= process.argv.slice(3).join("+");
   
 
     if(params=="") {
-        params="Mr.Nobody";
+        params="Mr.+Nobody";
     }
 
     var queryUrl = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
