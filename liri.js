@@ -7,7 +7,12 @@ var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
 var spotify = new Spotify(keys.spotify);
 var fs = require("fs");
-var params= process.argv.slice(3).join("+");
+// var params= process.argv.slice(3).join("+");
+// var commands;
+// var parameter;
+// var dataArr = data.split(',');
+
+
 
 
 //Decoration for the word LIRI
@@ -57,6 +62,8 @@ function App(command, params) {
 
 //Band
 function getMyBand(params) {
+    var params= process.argv.slice(3).join(" ");
+
     var queryURL = "https://rest.bandsintown.com/artists/" + params + "/events?app_id=codingbootcamp";
     axios.get(queryURL)
         .then(function (response) {
@@ -67,7 +74,7 @@ function getMyBand(params) {
                     (show.venue.region || show.venue.country) +
                     " at " + show.venue.name + " " +
                     moment(show.datetime).format("MM/DD/YYYY"))
-            }
+            };
         })
         .catch(function (error) {
             console.log(error);
@@ -97,13 +104,13 @@ function getMySong(params) {
 function doWhatISay() {
 	var commands;
     var parameter;
-
+    
 	
 	fs.readFile("random.txt", "utf8", function (error, data) {	
 		if (error) {
 			return console.log(error);
         }
-        console.log(data);
+        // console.log(data);
         // const dataArr = data.split(',');
         var dataArr = data.split(',');
         
@@ -114,7 +121,7 @@ function doWhatISay() {
         // console.log("here");
         App(commands, parameter);
         // App(commands, parameter);
-
+        
 
 		// for (var i = 0; i < dataArr.length; i++) {
 		// 	commands = dataArr[i];
@@ -128,14 +135,6 @@ function doWhatISay() {
 
 
 //OMDB
-// * Title of the movie.
-// * Year the movie came out.
-// * IMDB Rating of the movie.
-// * Rotten Tomatoes Rating of the movie.
-// * Country where the movie was produced.
-// * Language of the movie.
-// * Plot of the movie.
-// * Actors in the movie.
 function getMyMovie(params) {
     var axios = require("axios");
     // var nodeArgs = process.argv;
@@ -150,7 +149,6 @@ function getMyMovie(params) {
     var queryUrl = "http://www.omdbapi.com/?t=" + params + "&y=&plot=short&apikey=trilogy";
     console.log(queryUrl);
 
-    // queryUrl = "http://www.omdbapi.com/?t=Mr.+Nobody&y=&plot=short&apikey=trilogy"
     axios.get(queryUrl).then(
         function (response) {
             for(var i=0;i<response.data.Ratings.length;i++) {
