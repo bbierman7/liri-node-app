@@ -15,6 +15,8 @@ The user will be able to type in the 4 prompts shown below, and receive the outp
       A preview link of the song from Spotify
       The album that the song is from
       
+      **If no song is specified, it will output The Sign by Ace of Base
+      
   3) movie-this
       Title of the movie.
       Year the movie came out.
@@ -24,9 +26,12 @@ The user will be able to type in the 4 prompts shown below, and receive the outp
       Language of the movie.
       Plot of the movie.
       Actors in the movie.
+      
+      **If no movie is specified, it will output Mr. Nobody
 
   4) do-what-it-says
       Runs spotify-this-song for "I Want it That Way," which is text found in random.txt.
+      It will also run concert-this and movie-this.
 
 
 Because this is a CLI App, it cannot be deployed to GitHub pages or Heroku. The link to the demo can be found below.
